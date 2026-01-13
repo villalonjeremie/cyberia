@@ -1,7 +1,11 @@
-
 services:
-###> doctrine/doctrine-bundle ###
+  app:
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: dev
+    command: php -S 0.0.0.0:8000 -t public
+
   database:
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      - "5432:5432"
