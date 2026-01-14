@@ -1,13 +1,13 @@
 # 🚨 Anomaly Detection Logs with Isolation Forest (Python + ML)
 
-## 📌 Description
+## Description
 This project detects suspicious behaviors (brute force, abnormal traffic)
 from web access logs using **Isolation Forest**.
 
 The model is trained on aggregated features per IP and identifies anomalies
 without labeled data.
 
-## 🧠 Features used
+## Features used
 - requests_per_minute
 - failed_requests
 - unique_urls
@@ -16,7 +16,7 @@ without labeled data.
 - method_post
 - is_night
 
-## ⚙️ Tech stack
+## Tech stack
 - PHP
 - Symfony
 - API Platform
@@ -26,7 +26,7 @@ without labeled data.
 - Scikit-learn
 - Isolation Forest
 
-## 🚀 How to run
+## How to run
 ```bash
 git clone https://github.com/villalonjeremie/cyberia.git
 cd cyberia
