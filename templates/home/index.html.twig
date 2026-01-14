@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cyberia – API Log Analyzer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="header">
+  <h1>🛡 Cyber IA 🛡</h1>
+  <p>API de collecte et d’analyse des logs : IA & Machine Learning <br>
+  Comportement anormale, bruteforce lent, scan furtif, bot intelligent</p>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>Envoyer vos logs</h2>
+    <p>Collez les logs (JSON ou texte brut)</p>
+
+    <textarea id="logInput" placeholder='{"type":"bruteforce",
+	"content":{
+  "source": "apache",
+  "event": "auth_failure",
+  "ip": "192.168.1.50",
+  "timestamp": "2026-01-04T18:22:10Z",
+  "http": {
+    "method": "POST",
+    "path": "/login",
+    "status": 401,
+    "bytes": 512,
+    "user_agent": "Mozilla/5.0"
+  }
+}}'></textarea>
+
+    <button onclick="sendLog()">Envoyer le log</button>
+    <pre id="result"></pre>
+  </section>
+
+  <section class="card info">
+    <h2>⚙️ Fonctionnement</h2>
+    <ul>
+      <li>API Symfony (POST /api/log)</li>
+      <li>Stockage PostgreSQL (jsonb)</li>
+      <li>Analyse ML (Isolation Forest)</li>
+      <li>Détection brute force & anomalies</li>
+    </ul>
+    <p>
+    Logs entrants<br>
+            ↓<br>
+    Prédiction (model_v1)<br>
+            ↓<br>
+    Stockage logs + scores<br>
+            ↓<br>
+    Accumulation données<br>
+            ↓<br>
+    Réentraînement (model_v2)<br>
+            ↓<br>
+    Validation<br>
+            ↓<br>
+    Déploiement nouveau modèle</p>
+  </section>
+</main> 
+
+<footer>
+  <p>© 2026 – POC sécurité & IA - J.VILLALON</p>
+</footer>
+
+<script>
+async function sendLog() {
+  const log = document.getElementById('logInput').value;
+  const result = document.getElementById('result');
+
+  result.textContent = "⏳ Envoi en cours...";
+
+  try {
+    const response = await fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: log
+    });
+
+    const data = await response.json();
+    result.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    result.textContent = "❌ Erreur API";
+  }
+}
+</script>
+
+</body>
+</html>

@@ -26,6 +26,7 @@ final class LogController
         $logs->setSecurityType($data['type']);
         $logs->setLogsJson($data['content']);
         $logs->setCreatedAt($logs->getCreatedAt());
+        $logs->setIsProcessed(false);
 
         $em->persist($logs);
         $em->flush();

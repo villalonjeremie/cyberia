@@ -28,7 +28,7 @@ without labeled data.
 
 ## 🚀 How to run
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python src/train_model.py
+git clone https://github.com/villalonjeremie/cyberia.git
+cd cyberia
+docker-compose build
+go to http://localhost:8000/
