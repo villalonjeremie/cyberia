@@ -31,14 +31,11 @@ def load_features(path: str) -> np.ndarray:
     df = pd.read_csv(path)
 
     if df.isnull().any().any():
-        raise ValueError("❌ Données contenant des valeurs NULL")
+        raise ValueError("❌ \\Données contenant des valeurs NULL")
 
     X = df[FEATURE_COLUMNS].to_numpy()
     return X
 
-# =========================
-# TRAIN MODEL
-# =========================
 def train_model(X: np.ndarray) -> IsolationForest:
 
     scaler = StandardScaler()
