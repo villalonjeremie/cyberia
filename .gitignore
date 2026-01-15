@@ -1,16 +1,25 @@
+### Symfony / PHP ###
+/var/
+/vendor/
+/public/bundles/
+
+### Environment / Secrets ###
+.env
+.env.dev
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
+
+### Python / ML ###
 .venv/
-.env
-.env.dev
-python/model/*.pkl
 python/__pycache__/
+python/model/*.pkl
 python/data/*.csv
+
+### IDE / OS ###
 .vscode/
 .DS_Store
-compose.override.yaml.DS_Store
+
+### Docker ###
+compose.override.yaml
