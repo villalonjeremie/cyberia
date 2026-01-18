@@ -31,13 +31,12 @@ def load_features(path: str) -> np.ndarray:
     df = pd.read_csv(path)
 
     if df.isnull().any().any():
-        raise ValueError("❌ \\Données contenant des valeurs NULL")
+        raise ValueError("Données contenant des valeurs NULL")
 
     X = df[FEATURE_COLUMNS].to_numpy()
     return X
 
 def train_model(X: np.ndarray) -> IsolationForest:
-
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
@@ -49,50 +48,42 @@ def train_model(X: np.ndarray) -> IsolationForest:
     )
 
     model.fit(X_scaled)
+
+    print("Sauvegarde du modèle...")
+    Path(MODEL_PATH).parent.mkdir(parents=True, exist_ok=True)
+    bundle = {
+        "model": model,
+        "scaler": scaler,
+        "features": FEATURE_COLUMNS
+    }
+
+    joblib.dump(bundle, MODEL_PATH)
+    print(f"Modèle sauvegardé dans {MODEL_PATH}")
+
     return model
 
-
-# =========================
-# SAVE MODEL
-# =========================
 def save_model(model, path: str):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump(model, path)
+    bundle = {
+    "model": model,
+    "scaler": scaler,
+    "features": FEATURE_COLUMNS
+}
+    joblib.dump(bundle, path)
     print(f"✅ Modèle sauvegardé dans {path}")
 
-
-# =========================
-# MAIN
-# =========================
 def main():
     print("🔄 Chargement des features...")
     X = load_features(FEATURES_FILE)
 
+    print(f"{X} X en df puis numpy")
+    print(f"{len(X)} lignes chargées")
 
-
-    print(f"{X} 1er debug")
-
-
-
-    print(f"📊 {len(X)} lignes chargées")
-
-    print("🤖 Entraînement du modèle...")
+    print("Entraînement du modèle...")
     model = train_model(X)
-    print(f"{model} 2e debug")
 
-    print("💾 Sauvegarde du modèle...")
-    save_model(model, MODEL_PATH)
-
-    # Test rapide
-    scores = model.decision_function(X)
-    print(f"{scores} 3e debug")
-    print(f"{model.predict(X)} 4e debug")
-
-    anomalies = (model.predict(X) == -1).sum()
-
-    print(f"🚨 Anomalies détectées dans le train set : {anomalies}")
-    print(f"📉 Score moyen : {scores.mean():.4f}")
-
+    #print("Sauvegarde du modèle...")
+    #save_model(model, MODEL_PATH)
 
 if __name__ == "__main__":
     main()
