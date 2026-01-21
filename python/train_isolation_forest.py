@@ -2,12 +2,11 @@ import pandas as pd
 import joblib
 from sklearn.ensemble import IsolationForest
 from pathlib import Path
+import shutil
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from datetime import datetime, timedelta
 
-# =========================
-# CONFIG
-# =========================
 FEATURES_FILE = "features.csv"
 MODEL_PATH = "model/isolation_forest.pkl"
 FEATURE_COLUMNS = [
@@ -20,13 +19,10 @@ FEATURE_COLUMNS = [
     "is_night"
 ]
 
-CONTAMINATION = 0.01   # % estimé d'anomalies
+CONTAMINATION = 0.01
 N_ESTIMATORS = 200
 RANDOM_STATE = 42
 
-# =========================
-# LOAD DATA
-# =========================
 def load_features(path: str) -> np.ndarray:
     df = pd.read_csv(path)
 
@@ -36,7 +32,7 @@ def load_features(path: str) -> np.ndarray:
     X = df[FEATURE_COLUMNS].to_numpy()
     return X
 
-def train_model(X: np.ndarray) -> IsolationForest:
+def train_save_model(X: np.ndarray) -> IsolationForest:
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
@@ -49,41 +45,52 @@ def train_model(X: np.ndarray) -> IsolationForest:
 
     model.fit(X_scaled)
 
-    print("Sauvegarde du modèle...")
-    Path(MODEL_PATH).parent.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+
+    models_dir = Path("models")
+    models_dir.mkdir(exist_ok=True)
+
+    version_path = models_dir / f"isolation_forest_{timestamp}.pkl"
+    latest_path = models_dir / "isolation_forest_latest.pkl"
+
     bundle = {
         "model": model,
         "scaler": scaler,
-        "features": FEATURE_COLUMNS
+        "features": FEATURE_COLUMNS,
+        "trained_at": timestamp,
+        "n_samples": len(X)
     }
 
-    joblib.dump(bundle, MODEL_PATH)
-    print(f"Modèle sauvegardé dans {MODEL_PATH}")
+    joblib.dump(bundle, version_path)
+    joblib.dump(bundle, latest_path)
+
+    print(f"✅ Modèle versionné : {version_path}")
+    print(f"🔄 Modèle latest mis à jour")
 
     return model
 
-def save_model(model, path: str):
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
-    bundle = {
-    "model": model,
-    "scaler": scaler,
-    "features": FEATURE_COLUMNS
-}
-    joblib.dump(bundle, path)
-    print(f"✅ Modèle sauvegardé dans {path}")
-
 def main():
-    print("🔄 Chargement des features...")
-    X = load_features(FEATURES_FILE)
+    logs_dir = Path("daily_logs")
+    trained_dir = Path("daily_logs_trained")
+    trained_dir.mkdir(exist_ok=True)
+    csv_files = list(logs_dir.glob("*.csv"))
 
-    print(f"{X} X en df puis numpy")
-    print(f"{len(X)} lignes chargées")
+    if not csv_files:
+        print("❌ Aucun fichier à entraîner")
+        return
 
-    print("Entraînement du modèle...")
-    model = train_model(X)
+    for csv_file in csv_files:
+        print(f"\n Entraînement avec {csv_file.name}")
+        output_file = logs_dir / csv_file.name
+        X = load_features(output_file)
+        print(f"{X} X en df puis numpy")
+        print(f"{len(X)} lignes chargées")
+        print("Entraînement du modèle...")
+        train_save_model(X)
 
-    #print("Sauvegarde du modèle...")
-    #save_model(model, MODEL_PATH)
+        dest = trained_dir / csv_file.name
+        shutil.move(csv_file, dest)
+        print(f" Déplacé vers {dest}")
 
 if __name__ == "__main__":
     main()

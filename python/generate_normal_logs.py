@@ -1,8 +1,8 @@
 import csv
 import random
+from pathlib import Path
 from datetime import datetime, timedelta
 
-OUTPUT_FILE = "features.csv"
 LINES_PER_DAY = 10_000
 
 FIELDNAMES = [
@@ -39,8 +39,13 @@ def generate_normal_row(hour: int) -> dict:
 
 def main():
     now = datetime.now()
+    timestamp = now.strftime("%Y%m%d_%H%M%S")
+    logs_dir = Path("daily_logs")
+    logs_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(OUTPUT_FILE, "w", newline="") as f:
+    output_file = logs_dir / f"features_{timestamp}.csv"
+
+    with open(output_file, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         writer.writeheader()
 
@@ -49,7 +54,7 @@ def main():
             row = generate_normal_row(hour)
             writer.writerow(row)
 
-    print(f"{LINES_PER_DAY} lignes normales générées dans {OUTPUT_FILE}")
+    print(f"{LINES_PER_DAY} lignes normales générées dans {output_file}")
 
 if __name__ == "__main__":
     main()

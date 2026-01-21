@@ -21,10 +21,22 @@ def prediction_risk_score() -> list[dict]:
         raise ValueError(f"Colonnes manquantes : {missing}")
 
     X = df[features].to_numpy()
+
+    print(f"{X} X en df puis numpy")
+    print(f"{len(X)} lignes chargées")
+
+
     X_scaled = scaler.transform(X)
+    print(f"{X_scaled} X apres transform")
 
     scores = model.decision_function(X_scaled)
+
+    print(f"{scores} : scores")
+
     preds = model.predict(X_scaled)
+
+    print(f"{preds} : preds")
+
 
     results = []
     for i, row in df.iterrows():
@@ -34,7 +46,7 @@ def prediction_risk_score() -> list[dict]:
             "prediction": int(preds[i]),
             "risk": "HIGH" if preds[i] == -1 else "LOW"
         })
-    print(f"{results} : Results")
+    #print(f"{results} : Results")
 
     return results
 
