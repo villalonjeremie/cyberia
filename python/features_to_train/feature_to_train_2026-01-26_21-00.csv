@@ -1,0 +1,1 @@
+timestamp,requests_per_minute,failed_requests,unique_urls,avg_response_size,method_get,method_post,is_night

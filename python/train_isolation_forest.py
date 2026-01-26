@@ -70,8 +70,8 @@ def train_save_model(X: np.ndarray) -> IsolationForest:
     return model
 
 def main():
-    logs_dir = Path("daily_logs")
-    trained_dir = Path("daily_logs_trained")
+    logs_dir = Path("features_to_train")
+    trained_dir = Path("features_trained")
     trained_dir.mkdir(exist_ok=True)
     csv_files = list(logs_dir.glob("*.csv"))
 
@@ -87,8 +87,8 @@ def main():
         print(f"{len(X)} lignes chargées")
         print("Entraînement du modèle...")
         train_save_model(X)
-
-        dest = trained_dir / csv_file.name
+        new_csv_name = csv_file.name.replace("feature_to_train", "features_trained", 1)
+        dest = trained_dir / new_csv_name
         shutil.move(csv_file, dest)
         print(f" Déplacé vers {dest}")
 

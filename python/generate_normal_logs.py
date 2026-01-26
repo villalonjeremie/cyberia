@@ -40,7 +40,7 @@ def generate_normal_row(hour: int) -> dict:
 def main():
     now = datetime.now()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
-    logs_dir = Path("daily_logs")
+    logs_dir = Path("logs_to_train")
     logs_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = logs_dir / f"features_{timestamp}.csv"
