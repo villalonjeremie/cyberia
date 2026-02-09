@@ -28,8 +28,6 @@ for logs_json, security_type, created_at in rows:
 
 conn.close()
 
-
-
 while True:
     print("Waiting for logs...")
     time.sleep(5)

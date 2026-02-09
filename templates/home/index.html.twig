@@ -14,25 +14,29 @@
 </header>
 
 <main class="container">
-
   <section class="card">
     <h2>Envoyer vos logs</h2>
-    <p>Collez les logs (JSON ou texte brut)</p>
+    <form id="log-form">
+      <input type="file" name="file" accept=".log" required>
+      <button type="submit">Envoyer</button>
+    </form>
 
-    <textarea id="logInput" placeholder='{"type":"bruteforce",
-	"content":{
-  "source": "apache",
-  "event": "auth_failure",
-  "ip": "192.168.1.50",
-  "timestamp": "2026-01-04T18:22:10Z",
-  "http": {
-    "method": "POST",
-    "path": "/login",
-    "status": 401,
-    "bytes": 512,
-    "user_agent": "Mozilla/5.0"
-  }
-}}'></textarea>
+    <pre id="result">En attente du fichier…</pre>
+
+
+
+    <p>Collez les logs (texte format access.log)</p>
+
+    <textarea id="logInput" placeholder='220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892
+220.163.198.12 - - [26/Jan/2026:12:05:13 -0700] "POST /login HTTP/1.1" 200 3892'></textarea>
 
     <button onclick="sendLog()">Envoyer le log</button>
     <pre id="result"></pre>
@@ -88,6 +92,59 @@ async function sendLog() {
   }
 }
 </script>
+
+<script>
+document.getElementById('log-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const result = document.getElementById('result');
+    const formData = new FormData(form);
+
+    // Affichage pendant l'appel
+    result.textContent = '⏳ Envoi du fichier et analyse en cours...';
+
+    try {
+        const response = await fetch('/api/upload-log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: formData
+        });
+
+        const contentType = response.headers.get('content-type') || '';
+
+        if (!contentType.includes('application/json')) {
+            const text = await response.text();
+            result.textContent = '❌ Réponse invalide du serveur';
+            console.error(text);
+            return;
+        }
+
+console.log(response);
+
+        const data = await response.json();
+
+
+
+
+
+        if (!response.ok) {
+            result.textContent = data.detail || '❌ Erreur serveur';
+            return;
+        }
+
+        result.textContent =
+            `📄 Fichier : ${data.filename}\n` +
+            `📊 Nombre de lignes : ${data.count}\n\n` +
+            data.lines.join("\n");
+
+    } catch (error) {
+        result.textContent = '❌ Erreur réseau ou serveur indisponible';
+        console.error(error);
+    }
+});
+</script>
+
 
 </body>
 </html>
