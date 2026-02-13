@@ -1,5 +1,6 @@
 import joblib
 import numpy as np
+import json
 import pandas as pd
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -99,14 +100,16 @@ def transform_logs_to_feature():
 def remove_new_features_csv():
     file_path = Path("new_features.csv")
     if file_path.exists():
-        file_path.unlink()  # supprime le fichier
+        file_path.unlink()
         print(f"{file_path} supprimé avec succès !")
     else:
         print(f"{file_path} n'existe pas.")
 
 def main():
     transform_logs_to_feature()
-    prediction_risk_score()
+    results = prediction_risk_score()
+    print(json.dumps(results))
+    return results
     #remove_new_features_csv()
 
 if __name__ == "__main__":

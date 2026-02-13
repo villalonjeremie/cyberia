@@ -1,0 +1,15 @@
+services:
+  app:
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: dev
+    command: php -S 0.0.0.0:8000 -t public
+
+  python-worker:
+    ports:
+      - "8030:8030"
+
+  database:
+    ports:
+      - "5432:5432"

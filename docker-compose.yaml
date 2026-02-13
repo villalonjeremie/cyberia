@@ -10,6 +10,8 @@ services:
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     environment:
       APP_ENV: prod
+    env_file:
+      - .env.local
     depends_on:
       database:
         condition: service_healthy
@@ -22,6 +24,11 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8030"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
