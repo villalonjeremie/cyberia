@@ -116,7 +116,7 @@ document.getElementById('log-form').addEventListener('submit', async (e) => {
 
         result.textContent =
             `📄 Nombre de lignes : ${data.count}\n\n` +
-            data.lines.join("\n");
+            JSON.stringify(data.result.data, null, 2);
 
     } catch (error) {
         result.textContent = '❌ Erreur réseau';

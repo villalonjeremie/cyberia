@@ -7,7 +7,7 @@ minutes = 10
 total_lines = 1000
 methods = ["GET", "POST", "PUT", "DELETE"]
 urls = ["/index", "/about", "/contact", "/login", "/api/data", "/products", "/checkout"]
-status_codes = [200]*85 + [404]*5 + [500]*10 
+status_codes = [200]*100
 lines = []
 lines_per_minute = total_lines // minutes
 
