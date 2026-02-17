@@ -28,15 +28,15 @@ def prediction_risk_score() -> list[dict]:
     
     missing = set(features) - set(df.columns)
     if missing:
-        raise ValueError(f"Colonnes manquantes : {missing}")
+        raise ValueError(f"Missed columns : {missing}")
 
     X = df[features].to_numpy()
 
     print(f"{X} X en df puis numpy")
-    print(f"{len(X)} lignes chargées")
+    print(f"{len(X)} lines loaded")
 
     X_scaled = scaler.transform(X)
-    print(f"{X_scaled} X apres transform")
+    print(f"{X_scaled} X after transforming")
 
     scores = model.decision_function(X_scaled)
     print(f"{scores} : scores")
@@ -70,15 +70,21 @@ def remove_new_features_csv():
     file_path = Path("files/new_features.csv")
     if file_path.exists():
         file_path.unlink()
-        print(f"{file_path} supprimé avec succès !")
+        print(f"{file_path} removed !")
     else:
-        print(f"{file_path} n'existe pas.")
+        print(f"{file_path} does not exist.")
+
+    file_path = Path("files/new_init_features.csv")
+    if file_path.exists():
+        file_path.unlink()
+        print(f"{file_path} removed !")
+    else:
+        print(f"{file_path} does not exist.")
 
 def main():
     transform_logs_to_feature("files/access.log", False)
     results = prediction_risk_score()
-    print(json.dumps(results))
-    remove_new_features_csv()
+    #remove_new_features_csv()
     return results
 
 if __name__ == "__main__":

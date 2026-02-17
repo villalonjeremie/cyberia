@@ -71,6 +71,7 @@ def train_save_model(X: np.ndarray) -> IsolationForest:
 
     return model
 
+
 def initial_training_model():
     print(f"\n Entraînement initial")
     file_init_access_path = Path("files/init_access.log")
@@ -86,6 +87,7 @@ def initial_training_model():
     print("Entraînement du modèle...")
     train_save_model(X)
     print("Modèle entrainé...")
+    
 
 def training_model():
     logs_dir = Path("files/features_to_train")
@@ -109,7 +111,7 @@ def training_model():
 
     merged_file = Path("files/merged_features.csv")
     if merged_file.exists():
-        merged_file.unlink()
+        #merged_file.unlink()
         print("Fichier merged_features.csv supprimé")
 
 def transform_logs_to_feature(access_log: str, is_initial: bool):

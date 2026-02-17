@@ -35,10 +35,13 @@ class PythonPredictionService
                         'X-API-KEY' => $this->pythonApiKey,
                     ],
 
-                    'body' => [
-                        'file' => fopen($filePath, 'r'),
+                    'multipart' => [
+                        [
+                            'name' => 'file',
+                            'contents' => fopen($filePath, 'r'),
+                            'filename' => basename($filePath),
+                        ]
                     ],
-
                     'timeout' => 60,
                 ]
             );
