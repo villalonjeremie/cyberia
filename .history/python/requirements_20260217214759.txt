@@ -1,0 +1,9 @@
+numpy
+pandas
+scikit-learn
+psycopg2-binary
+joblib
+debugpy
+fastapi
+uvicorn
+python-multipart
