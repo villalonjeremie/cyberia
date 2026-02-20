@@ -4,18 +4,23 @@
 /public/bundles/
 
 ### Environment / Secrets ###
-.env
-.env.dev
+/.env
+/.env.dev
 /.env.local
 /.env.local.php
 /.env.*.local
+/python/.env.local
+/python/.env
+/python/.env.dev
+/python/.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 
 ### Python / ML ###
 .venv/
 python/__pycache__/
-python/model/*.pkl
+python/models/*.pkl
 python/data/*.csv
+python/files/
 
 ### IDE / OS ###
 .vscode/
