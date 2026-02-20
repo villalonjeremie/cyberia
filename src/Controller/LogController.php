@@ -6,17 +6,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Logs;
+use App\Service\PythonPredictionService;
 
 final class LogController
 {
+    private PythonPredictionService $pythonService;
+
+    public function __construct(PythonPredictionService $pythonService)
+    {
+        $this->pythonService = $pythonService;
+    }
+
     #[Route('/api/log',name: 'api_log', methods: ['POST'])]
     public function __invoke(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $data = $request->getContent();
+        $dataArray = json_decode($request->getContent(), true);
+        $logContent = $dataArray['content'];
 
-        if (empty($data)) {
+        if (empty($dataArray)) {
             return new JsonResponse(
                 [
                     'status' => 'error',
@@ -26,8 +35,7 @@ final class LogController
             );
         }
 
-        $lines = explode("\n", trim($data));
-        $validLines = [];
+       $lines = explode("\n", trim($logContent));
 
         foreach ($lines as $line) {
             if (!$this->isValidApacheLogLine($line)) {
@@ -42,19 +50,32 @@ final class LogController
             }
         }
 
-        $logDir = __DIR__ . '/../../python';
+        $tempPath = tempnam(sys_get_temp_dir(), 'log_');
+        file_put_contents($tempPath, $logContent);
 
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0755, true);
-        }
+        $file = new UploadedFile(
+            $tempPath,
+            'access.log',
+            'text/plain',
+            null,
+            true
+        );
+        
+        $originalFinalName = $file->getClientOriginalName();
+        $filePath = $file->getPathname();
+        $result = $this->pythonService->sendLogFile($filePath, $originalFinalName);
 
-        $logFile = $logDir . '/access.log';
-        file_put_contents($logFile, $data, FILE_APPEND);
+        $lines = file(
+            $file->getPathname(),
+            FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
+        );
 
         return new JsonResponse([
-            'status' => 'ok',
-            'received' => $data,
-        ]);
+            'filename' => $file->getClientOriginalName(),
+            'count' => count($lines),
+            'lines' => $lines,
+            'result' => $result
+        ]); 
     }
 
     private function isValidApacheLogLine(string $line): bool

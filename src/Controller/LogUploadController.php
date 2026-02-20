@@ -23,7 +23,7 @@ class LogUploadController extends AbstractController
     public function upload(Request $request): JsonResponse
     {
         $file = $request->files->get('file');
-\
+
         if (!$file) {
             return new JsonResponse([
                 'error' => 'Aucun fichier reçu'
@@ -41,7 +41,6 @@ class LogUploadController extends AbstractController
         $filePath = $file->getPathname();
 
         $result = $this->pythonService->sendLogFile($filePath, $originalFinalName);
-        $resultJson = $this->json($result);
 
         $lines = file(
             $file->getPathname(),

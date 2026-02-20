@@ -1,0 +1,10 @@
+requests_per_minute,failed_requests,unique_urls,avg_response_size,method_get,method_post,is_night
+4,0.0,3,2634.75,0.0,3.0,False
+1,0.0,1,2425.0,0.0,1.0,False
+3,0.0,3,2658.0,0.0,1.0,False
+3,0.0,3,2447.6666666666665,3.0,0.0,False
+3,0.0,3,3457.333333333333,1.0,1.0,False
+1,0.0,1,4404.0,0.0,1.0,False
+1,0.0,1,4810.0,1.0,0.0,False
+4,0.0,3,2395.0,1.0,2.0,False
+1,0.0,1,4995.0,0.0,0.0,False

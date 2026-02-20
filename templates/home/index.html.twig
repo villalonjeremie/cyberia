@@ -16,7 +16,7 @@
 <main class="container">
   <section class="card">
     <h2>Envoyer vos logs</h2>
-    <form id="log-form">
+    <form id="log-file-form">
       <input type="file" name="file" accept=".log" required>
       <button type="submit">Envoyer</button>
     </form>
@@ -71,20 +71,43 @@
 
 <script>
 async function sendLog() {
-  const log = document.getElementById('logInput').value;
-  const result = document.getElementById('result');
+    const logContent = document.getElementById('logInput').value;
+    const result = document.getElementById('result');
 
-  result.textContent = "⏳ Envoi en cours...";
+    if (!logContent.trim()) {
+        result.textContent = "❌ Veuillez coller un log";
+        return;
+    }
 
-  try {
-    const response = await fetch('/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: log
-    });
+    result.textContent = "⏳ Envoi en cours...";
 
-    const data = await response.json();
-    result.textContent = JSON.stringify(data, null, 2);
+    try {
+        const body = {
+            filename: "access.log",
+            content: logContent
+        };
+
+        const response = await fetch('/api/log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) { 
+            result.textContent = data.detail || '❌ Erreur serveur';
+            return;
+        }
+
+        result.textContent =
+            `📄 Nombre de lignes : ${data.count}\n\n` +
+            `Nom du fichier : ${data.filename}\n\n` +
+            `${data.lines.join("\n")}\n\n` +
+            `Résultat : ${JSON.stringify(data.result, null, 2)}`;
+
   } catch (e) {
     result.textContent = "❌ Erreur API";
   }
@@ -92,7 +115,7 @@ async function sendLog() {
 </script>
 
 <script>
-document.getElementById('log-form').addEventListener('submit', async (e) => {
+document.getElementById('log-file-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const form = e.target;

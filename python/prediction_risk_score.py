@@ -12,7 +12,7 @@ MODEL_PATH = "models/isolation_forest_latest.pkl"
 NEW_FEATURES_FILE = "files/new_features.csv"
 ACCESS_LOG = "files/access.log"
 
-def prediction_risk_score() -> list[dict]:
+def prediction_isolation_forest_risk_score() -> list[dict]:
     file_path = Path(MODEL_PATH)
     if not file_path.exists():
         initial_training_model()
@@ -26,6 +26,10 @@ def prediction_risk_score() -> list[dict]:
 
     df = pd.read_csv(NEW_FEATURES_FILE)
     
+
+    #llm_Call NEW_FEATURES_FILE
+
+
     missing = set(features) - set(df.columns)
     if missing:
         raise ValueError(f"Missed columns : {missing}")
@@ -83,9 +87,10 @@ def remove_new_features_csv():
 
 def main():
     transform_logs_to_feature("files/access.log", False)
-    results = prediction_risk_score()
+    results_llm = prediction_llm_risk_score()
+    results_isolation_forest = prediction_isolation_forest_risk_score()
     #remove_new_features_csv()
-    return results
+    return results_isolation_forest
 
 if __name__ == "__main__":
     main()

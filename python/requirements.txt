@@ -7,3 +7,4 @@ debugpy
 fastapi
 uvicorn
 python-multipart
+python-dotenv

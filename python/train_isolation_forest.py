@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 
+
 FEATURES_FILE = "features.csv"
 INITIAL_FILE_CSV = "initial_feature_to_train.csv"
 MODEL_PATH = "model/isolation_forest.pkl"

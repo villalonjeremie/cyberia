@@ -2,7 +2,7 @@ from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import base64
 import os
-from prediction_isolation_forest import main
+from python.prediction_llm_risk_score import main
 
 app = FastAPI()
 
@@ -11,7 +11,8 @@ os.makedirs(FILES_DIR, exist_ok=True)
 
 class PredictRequest(BaseModel):
     filename: str
-    content_base64: str  # on envoie le contenu du fichier encodé en base64
+    content_base64: str
+    original_filename: str
 
 
 @app.post("/predict")
