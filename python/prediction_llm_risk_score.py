@@ -34,7 +34,6 @@ def call_hf(prompt):
         return result[0]["generated_text"]
     return str(result)
 
-# 🔹 5️⃣ Boucle sur chaque ligne du CSV
 for idx, row in df.iterrows():
     prompt = make_prompt(row)
     output = call_hf(prompt)
