@@ -2,7 +2,7 @@ from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import base64
 import os
-from python.prediction_llm_risk_score import main
+from prediction_llm_risk_score import main
 
 app = FastAPI()
 

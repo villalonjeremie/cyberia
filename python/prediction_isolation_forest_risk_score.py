@@ -1,11 +1,8 @@
 import joblib
 import numpy as np
-import json
 import pandas as pd
 from pathlib import Path
-from datetime import datetime, timedelta
-import re
-from train_isolation_forest import transform_logs_to_feature
+from datetime import datetime
 from train_isolation_forest import initial_training_model, training_model
 
 MODEL_PATH = "models/isolation_forest_latest.pkl"
@@ -65,3 +62,9 @@ def prediction_isolation_forest_risk_score() -> list[dict]:
             })
     print(f"{results} : Results")
     return results
+
+def main():
+    prediction_isolation_forest_risk_score()
+
+if __name__ == "__main__":
+    main()
