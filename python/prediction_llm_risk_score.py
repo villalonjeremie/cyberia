@@ -3,18 +3,22 @@ import pandas as pd
 import requests
 import json
 from dotenv import load_dotenv
+from huggingface_hub import InferenceClient
 
 load_dotenv()
 HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+MODEL = "meta-llama/Llama-3-8B-Instruct"
 NEW_FEATURES_FILE = "files/new_features.csv"
 
 def call_hf(prompt):
-    url = f"https://api-inference.huggingface.co/models/mistralai/{MODEL}"
-    headers = {"Authorization": f"Bearer {HF_API_KEY}"}
-    payload = {"inputs": prompt, "parameters": {"max_new_tokens": 500, "temperature": 0.7}}
-    
-    response = requests.post(url, headers=headers, json=payload)
+    client = InferenceClient(token=HF_API_KEY)
+    response = client.text_generation(
+        model="tiiuae/falcon-7b-instruct",
+        prompt=prompt,
+        max_new_tokens=500,
+        temperature=0.7
+    )
+
     response.raise_for_status()
     result = response.json()
     

@@ -32,7 +32,7 @@ def remove_new_features_csv():
 
 def main():
     transform_logs_to_feature(ACCESS_LOG, False)
-    results_llm = prediction_llm_risk_score()
+    #results_llm = prediction_llm_risk_score()
     results_isolation_forest = prediction_isolation_forest_risk_score()
     #remove_new_features_csv()
     return results_isolation_forest

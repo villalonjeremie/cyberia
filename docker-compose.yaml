@@ -21,6 +21,8 @@ services:
     container_name: log_python_worker
     volumes:
       - ./python:/app
+    env_file:
+      - .env.local
     depends_on:
       database:
         condition: service_healthy
